@@ -5,5 +5,4 @@ const salesmanController = require('../controllers/salesman.controller')
 
 router.post('/routes', salesmanController.findRoute)
 
-
 module.exports = router
