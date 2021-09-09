@@ -1,10 +1,15 @@
-const PathService = require('./path.service')
-const PointService = require('./point.service')
+const pathService = require('./path.service')
+const pointDto = require('../dtos/point.dto')
+// remove it
+const placesService = require('./places.service')
 
-class SalesmanService {
-    async solve(points, tempCoefficient = 0.999, callback, distance = this.euclidean) {
-        const pointsCls = points.map(([x, y]) => new PointService(x, y))
-        const path = new PathService(pointsCls, distance)
+module.exports = class SalesmanService {
+    static async solve(points, tempCoefficient = 0.999, distance = this.euclidean) {
+        const pointsCls = points.map(([x, y]) => new pointDto(x, y))
+        const path = new pathService(pointsCls, distance)
+        placesService.getPlacesOfInterest()
+
+
         if (pointsCls.length < 2) return path.order
 
         if (!tempCoefficient) {
@@ -16,16 +21,13 @@ class SalesmanService {
              temperature *= tempCoefficient) {
 
             path.change(temperature)
-            if (typeof callback === 'function') callback(path.order)
         }
 
-        return path.order;
+        return path.order
     }
 
-    euclidean(p, q) {
-        const dx = p.x - q.x, dy = p.y - q.y;
-        return Math.sqrt(dx*dx + dy*dy);
+    static euclidean(p, q) {
+        const dx = p.x - q.x, dy = p.y - q.y
+        return Math.sqrt(dx*dx + dy*dy)
     }
 }
-
-module.exports = new SalesmanService()
